@@ -1,3 +1,3 @@
 
 ## Istio enabled apps
-![Test Image ](“IstioEnabledApps.png”)
+![Test Image ](IstioEnabledApps.png)
