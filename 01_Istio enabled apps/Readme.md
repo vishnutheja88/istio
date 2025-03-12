@@ -4,7 +4,7 @@
 
 
 
-``sh
+```sh
 kubectl apply -f <(istioctl kube-inject -f deployment.yaml)>
 kubectl apply -f deployment.yaml
 
