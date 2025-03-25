@@ -1,0 +1,100 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ns1
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ns2
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-tls
+  namespace: ns1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-tls
+  template:
+    metadata:
+      labels:
+        app: hello-tls
+        verssion: v1-tls
+    spec:
+      containers:
+      - name: hello
+        image: wardviaene/http-echo
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: TEXT
+          value: hello
+        - name: NEXT
+          value: "world.ns2:8080"
+        ports:
+        - name: http
+          containerPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: world-tls
+  namespace: ns2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: world-tls
+  template:
+    metadata:
+      labels:
+        app: world-tls
+        version: v1-tls
+    spec:
+      containers:
+      - name: world
+        image: wardviaene/http-echo
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: TEXT
+          value: world
+        - name: NEXT
+          value: "end.legacy:8080"
+        ports:
+        - name: http
+          containerPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: world-reverse-tls
+  namespace: ns2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: world-reverse
+  template:
+    metadata:
+      labels:
+        app: world-reverse
+        version: v1-tls
+    spec:
+      containers:
+      - name: hello
+        image: wardviaene/http-echo
+        env: 
+        - name: TEXT
+          value: world
+        - name: NEXT
+          value: "end-reverse.ns1:8080"
+        ports:
+        - name: http
+          containerPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+
+    
